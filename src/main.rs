@@ -1,9 +1,9 @@
-use std::env;
 use std::str;
 
 use quick_xml::events::Event;
 use quick_xml::Reader;
 
+use clap::Parser;
 
 // TODO:
 // - Fb2 format
@@ -11,6 +11,19 @@ use quick_xml::Reader;
 //  - Get book information
 //  - Read book content
 
+#[derive(Parser, Debug)]
+#[clap()]
+struct Args {
+    filename: String,
+}
+
+
+fn main() { 
+    let args = Args::parse();
+
+    let filename = &args.filename;
+    parse_file(filename);
+}
 
 fn parse_file(filename: &str) {
     let mut reader = Reader::from_file(filename).expect("Error with file"); 
@@ -32,17 +45,4 @@ fn parse_file(filename: &str) {
 
         buf.clear();
     }
-}
-
-fn main() { 
-    let args: Vec<String> = env::args().collect();
-
-    // You have to specifie the file 
-    if args.len() <= 1 {
-        eprintln!("You have to specifi the file to read\n  -- what [file]");
-        return;
-    }
-
-    let filename = &args[1];
-    parse_file(filename);
 }
